@@ -3,6 +3,12 @@ import {join} from 'path'
 import {readFile} from 'fs'
 import yaml from 'js-yaml'
 
+type safeLoadType = string | object | undefined
+
+interface Pubspec {
+  version?: string
+}
+
 async function run(): Promise<void> {
   try {
     const version = await getFlutterVersion()
@@ -18,20 +24,24 @@ run()
 async function getFlutterVersion(): Promise<string> {
   const dir = process.env.GITHUB_WORKSPACE || './'
   const pubspecYaml = join(dir, 'pubspec.yaml')
-  const pubspecData = await readYamlFile(pubspecYaml)
+  const pubspecObj = await readYamlFile(pubspecYaml)
 
-  if (!pubspecData) {
+  if (!pubspecObj) {
     throw new Error(`pubspec.yaml not found ${pubspecYaml}`)
   }
+  if (typeof pubspecObj !== 'object') {
+    throw new Error(`${pubspecObj} is not an object`)
+  }
 
-  if (!pubspecData.version || typeof pubspecData.version !== 'string') {
+  const pubspecData = pubspecObj as Pubspec
+  if (!pubspecData.version) {
     throw new Error('version not found in pubspec.yaml')
   }
   const versionList = pubspecData.version.split('+')
   return versionList[0]
 }
 
-async function readYamlFile(file: string) {
+async function readYamlFile(file: string): Promise<safeLoadType> {
   const fileData: string = await new Promise((resolve, reject) =>
     readFile(file, 'utf8', (err, data) => {
       if (err) {
@@ -41,5 +51,5 @@ async function readYamlFile(file: string) {
       }
     })
   )
-  return yaml.load(fileData)
+  return yaml.safeLoad(fileData)
 }

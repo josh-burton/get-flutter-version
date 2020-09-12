@@ -1058,11 +1058,15 @@ function getFlutterVersion() {
     return __awaiter(this, void 0, void 0, function* () {
         const dir = process.env.GITHUB_WORKSPACE || './';
         const pubspecYaml = path_1.join(dir, 'pubspec.yaml');
-        const pubspecData = yield readYamlFile(pubspecYaml);
-        if (!pubspecData) {
+        const pubspecObj = yield readYamlFile(pubspecYaml);
+        if (!pubspecObj) {
             throw new Error(`pubspec.yaml not found ${pubspecYaml}`);
         }
-        if (!pubspecData.version || typeof pubspecData.version !== 'string') {
+        if (typeof pubspecObj !== 'object') {
+            throw new Error(`${pubspecObj} is not an object`);
+        }
+        const pubspecData = pubspecObj;
+        if (!pubspecData.version) {
             throw new Error('version not found in pubspec.yaml');
         }
         const versionList = pubspecData.version.split('+');
@@ -1079,7 +1083,7 @@ function readYamlFile(file) {
                 resolve(data);
             }
         }));
-        return js_yaml_1.default.load(fileData);
+        return js_yaml_1.default.safeLoad(fileData);
     });
 }
 
