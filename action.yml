@@ -1,0 +1,9 @@
+name: 'Get Flutter Version'
+description: 'Get flutter version from pubspec.yaml'
+author: 'its404'
+outputs:
+  version:
+    description: 'Flutter version'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
