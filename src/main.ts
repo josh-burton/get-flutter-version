@@ -5,7 +5,7 @@ import yaml from 'js-yaml'
 
 async function run(): Promise<void> {
   try {
-    const version = getFlutterVersion()
+    const version = await getFlutterVersion()
     core.info(`version: ${version}`)
     core.setOutput('version', version)
   } catch (error) {
@@ -18,21 +18,20 @@ run()
 async function getFlutterVersion(): Promise<string> {
   const dir = process.env.GITHUB_WORKSPACE || './'
   const pubspecYaml = join(dir, 'pubspec.yaml')
-  const pubspecData = await readYamlFile(pubspecYaml).catch(() => {
-    Promise.reject(new Error(`pubspec.yaml not found: ${pubspecYaml}`))
-  })
-  if (
-    !pubspecData ||
-    !pubspecData.version ||
-    typeof pubspecData.version !== 'string'
-  ) {
-    core.setFailed('version not found in pubspec.yaml')
+  const pubspecData = await readYamlFile(pubspecYaml)
+
+  if (!pubspecData) {
+    throw new Error(`pubspec.yaml not found ${pubspecYaml}`)
+  }
+
+  if (!pubspecData.version || typeof pubspecData.version !== 'string') {
+    throw new Error('version not found in pubspec.yaml')
   }
   const versionList = pubspecData.version.split('+')
   return versionList[0]
 }
 
-async function readYamlFile(file: string) {
+async function readYamlFile(file: string): Promise<any> {
   const fileData: string = await new Promise((resolve, reject) =>
     readFile(file, 'utf8', (err, data) => {
       if (err) {

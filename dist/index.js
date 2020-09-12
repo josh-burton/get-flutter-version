@@ -1044,7 +1044,7 @@ const js_yaml_1 = __importDefault(__webpack_require__(917));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const version = getFlutterVersion();
+            const version = yield getFlutterVersion();
             core.info(`version: ${version}`);
             core.setOutput('version', version);
         }
@@ -1058,13 +1058,12 @@ function getFlutterVersion() {
     return __awaiter(this, void 0, void 0, function* () {
         const dir = process.env.GITHUB_WORKSPACE || './';
         const pubspecYaml = path_1.join(dir, 'pubspec.yaml');
-        const pubspecData = yield readYamlFile(pubspecYaml).catch(() => {
-            Promise.reject(new Error(`pubspec.yaml not found: ${pubspecYaml}`));
-        });
-        if (!pubspecData ||
-            !pubspecData.version ||
-            typeof pubspecData.version !== 'string') {
-            core.setFailed('version not found in pubspec.yaml');
+        const pubspecData = yield readYamlFile(pubspecYaml);
+        if (!pubspecData) {
+            throw new Error(`pubspec.yaml not found ${pubspecYaml}`);
+        }
+        if (!pubspecData.version || typeof pubspecData.version !== 'string') {
+            throw new Error('version not found in pubspec.yaml');
         }
         const versionList = pubspecData.version.split('+');
         return versionList[0];
