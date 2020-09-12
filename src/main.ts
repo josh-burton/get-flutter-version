@@ -31,7 +31,7 @@ async function getFlutterVersion(): Promise<string> {
   return versionList[0]
 }
 
-async function readYamlFile(file: string): Promise<any> {
+async function readYamlFile(file: string) {
   const fileData: string = await new Promise((resolve, reject) =>
     readFile(file, 'utf8', (err, data) => {
       if (err) {
