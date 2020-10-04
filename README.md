@@ -1,7 +1,8 @@
 # Get flutter version
 
-Get flutter verion from pubspec.yaml
+Get flutter verion number and build number from pubspec.yaml
 
 ### Outputs
 
-- `version`: The flutter verion from pubspect.yaml
+- `version_number`: The flutter version number in pubspect.yaml
+- `builder_number`: The flutter build number in pubspect.yaml

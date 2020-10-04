@@ -11,9 +11,7 @@ interface Pubspec {
 
 async function run(): Promise<void> {
   try {
-    const version = await getFlutterVersion()
-    core.info(`version: ${version}`)
-    core.setOutput('version', version)
+    await getFlutterVersion()
   } catch (error) {
     core.setFailed(error.message)
   }
@@ -21,7 +19,7 @@ async function run(): Promise<void> {
 
 run()
 
-async function getFlutterVersion(): Promise<string> {
+async function getFlutterVersion() {
   const dir = process.env.GITHUB_WORKSPACE || './'
   const pubspecYaml = join(dir, 'pubspec.yaml')
   const pubspecObj = await readYamlFile(pubspecYaml)
@@ -38,7 +36,15 @@ async function getFlutterVersion(): Promise<string> {
     throw new Error('version not found in pubspec.yaml')
   }
   const versionList = pubspecData.version.split('+')
-  return versionList[0]
+
+  if (versionList.length !== 2) {
+    throw new Error('invalid version format in pubspec.yaml')
+  }
+
+  core.info(`version_number: ${versionList[0]}`)
+  core.info(`build_number: ${versionList[1]}`)
+  core.setOutput('version_number', versionList[0])
+  core.setOutput('build_number', versionList[1])
 }
 
 async function readYamlFile(file: string): Promise<safeLoadType> {
