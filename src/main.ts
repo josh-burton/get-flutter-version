@@ -19,7 +19,7 @@ async function run(): Promise<void> {
 
 run()
 
-async function getFlutterVersion() {
+async function getFlutterVersion(): Promise<void> {
   const dir = process.env.GITHUB_WORKSPACE || './'
   const pubspecYaml = join(dir, 'pubspec.yaml')
   const pubspecObj = await readYamlFile(pubspecYaml)

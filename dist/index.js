@@ -1044,9 +1044,7 @@ const js_yaml_1 = __importDefault(__webpack_require__(917));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const version = yield getFlutterVersion();
-            core.info(`version: ${version}`);
-            core.setOutput('version', version);
+            yield getFlutterVersion();
         }
         catch (error) {
             core.setFailed(error.message);
@@ -1070,7 +1068,13 @@ function getFlutterVersion() {
             throw new Error('version not found in pubspec.yaml');
         }
         const versionList = pubspecData.version.split('+');
-        return versionList[0];
+        if (versionList.length !== 2) {
+            throw new Error('invalid version format in pubspec.yaml');
+        }
+        core.info(`version_number: ${versionList[0]}`);
+        core.info(`build_number: ${versionList[1]}`);
+        core.setOutput('version_number', versionList[0]);
+        core.setOutput('build_number', versionList[1]);
     });
 }
 function readYamlFile(file) {
