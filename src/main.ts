@@ -1,4 +1,4 @@
-import * as core from '@actions/core'
+const core = require("@actions/core");
 import {join} from 'path'
 import {readFile} from 'fs'
 import yaml from 'js-yaml'
@@ -20,11 +20,13 @@ async function run(): Promise<void> {
 run()
 
 async function getFlutterVersion(): Promise<void> {
-  core.debug(`${process.cwd()}`)
-  core.debug(`${process.env.GITHUB_WORKSPACE}`)
+  core.debug('start')
 
-  const dir = process.env.GITHUB_WORKSPACE || './'
-  const pubspecYaml = join(dir, 'pubspec.yaml')
+  const pubspecYaml = join(
+    process.cwd(),
+    core.getInput('working-directory'),
+    'pubspec.yaml'
+  )
   const pubspecObj = await readYamlFile(pubspecYaml)
 
   if (!pubspecObj) {
