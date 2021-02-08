@@ -1,4 +1,4 @@
-const core = require("@actions/core");
+import * as core from '@actions/core'
 import {join} from 'path'
 import {readFile} from 'fs'
 import yaml from 'js-yaml'
@@ -21,6 +21,8 @@ run()
 
 async function getFlutterVersion(): Promise<void> {
   core.debug('start')
+  core.debug(`${process.cwd()}`)
+  core.debug(`${core.getInput('working-directory')}`)
 
   const pubspecYaml = join(
     process.cwd(),
