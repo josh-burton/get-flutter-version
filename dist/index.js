@@ -1157,6 +1157,8 @@ function getFlutterVersion() {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug('start');
         core.debug(`${process.cwd()}`);
+        core.debug(`${process.env.GITHUB_WORKSPACE}`);
+        core.debug(`${process.env.PWD}`);
         core.debug(`${core.getInput('working-directory')}`);
         const pubspecYaml = path_1.join(process.cwd(), core.getInput('working-directory'), 'pubspec.yaml');
         const pubspecObj = yield readYamlFile(pubspecYaml);

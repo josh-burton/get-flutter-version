@@ -22,6 +22,8 @@ run()
 async function getFlutterVersion(): Promise<void> {
   core.debug('start')
   core.debug(`${process.cwd()}`)
+  core.debug(`${process.env.GITHUB_WORKSPACE}`)
+  core.debug(`${process.env.PWD}`)
   core.debug(`${core.getInput('working-directory')}`)
 
   const pubspecYaml = join(
